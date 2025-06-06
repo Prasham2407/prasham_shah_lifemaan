@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { ModuleDataService } from '../../../core/services/data/module.data.service';
 
 interface File {
   id: number;
@@ -109,19 +110,14 @@ export class FileListComponent implements OnInit {
     delete: 'Files.DeleteFiles'
   }
 
-  constructor(private router: Router) {
+  constructor(private router: Router,
+    private moduleDataService:ModuleDataService
+  ) {
     this.dataSource = new MatTableDataSource<File>([]);
   }
 
   ngOnInit() {
-    const storedFiles = localStorage.getItem('files');
-    if (storedFiles) {
-      const files = JSON.parse(storedFiles);
-      this.dataSource.data = files.map((file: any) => ({
-        ...file,
-        uploadedAt: new Date(file.uploadedAt)
-      }));
-    }
+    this.dataSource.data = this.moduleDataService.getData('files');
   }
 
   ngAfterViewInit() {

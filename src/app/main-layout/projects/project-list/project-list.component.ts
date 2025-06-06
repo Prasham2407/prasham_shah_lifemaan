@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModuleDataService } from '../../../core/services/data/module.data.service';
 
 interface Project {
   id: number;
@@ -88,52 +89,12 @@ export class ProjectListComponent implements OnInit {
   }
 
   constructor(
-    private router: Router
+    private router: Router,
+    private moduleDataService:ModuleDataService
   ) {}
 
   ngOnInit() {
-    this.loadProjects();
-  }
-
-  loadProjects() {
-    const storedProjects = localStorage.getItem('projects');
-    if (storedProjects) {
-      const projects = JSON.parse(storedProjects);
-      this.projects = projects.map((project: any) => ({
-        ...project,
-        createdAt: new Date(project.createdAt),
-        updatedAt: new Date(project.updatedAt)
-      }));
-    } else {
-      // Initialize with mock data
-      this.projects = [
-        {
-          id: 1,
-          name: 'Website Redesign',
-          description: 'Complete overhaul of the company website with modern design and improved user experience',
-          status: 'In Progress',
-          createdAt: new Date('2024-01-15'),
-          updatedAt: new Date('2024-01-20')
-        },
-        {
-          id: 2,
-          name: 'Mobile App Development',
-          description: 'Development of a new mobile application for iOS and Android platforms',
-          status: 'Planning',
-          createdAt: new Date('2024-01-10'),
-          updatedAt: new Date('2024-01-10')
-        },
-        {
-          id: 3,
-          name: 'Database Migration',
-          description: 'Migration of legacy database to new cloud-based solution',
-          status: 'Completed',
-          createdAt: new Date('2024-01-05'),
-          updatedAt: new Date('2024-01-18')
-        }
-      ];
-      localStorage.setItem('projects', JSON.stringify(this.projects));
-    }
+    this.projects = this.moduleDataService.getData('projects');
   }
 
   createProject() {
@@ -155,7 +116,7 @@ export class ProjectListComponent implements OnInit {
         const projects = JSON.parse(storedProjects);
         const updatedProjects = projects.filter((p: Project) => p.id !== project.id);
         localStorage.setItem('projects', JSON.stringify(updatedProjects));
-        this.loadProjects();
+        this.projects = this.moduleDataService.getData('projects');
       }
     }
   }

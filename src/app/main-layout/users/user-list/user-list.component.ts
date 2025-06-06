@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModuleDataService } from '../../../core/services/data/module.data.service';
 
 interface User {
   id: number;
@@ -104,54 +105,11 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private moduleDataService:ModuleDataService
   ) {}
 
   ngOnInit() {
-    this.loadUsers();
-  }
-
-  loadUsers() {
-    const storedUsers = localStorage.getItem('users');
-    if (storedUsers) {
-      const users = JSON.parse(storedUsers);
-      this.users = users.map((user: any) => ({
-        ...user,
-        createdAt: new Date(user.createdAt),
-        updatedAt: new Date(user.updatedAt || user.createdAt)
-      }));
-    } else {
-      // Initialize with mock data
-      this.users = [
-        {
-          id: 1,
-          username: 'john.doe',
-          email: 'john.doe@example.com',
-          role: 'Admin',
-          status: 'Active',
-          createdAt: new Date('2024-01-15'),
-          updatedAt: new Date('2024-01-20')
-        },
-        {
-          id: 2,
-          username: 'jane.smith',
-          email: 'jane.smith@example.com',
-          role: 'User',
-          status: 'Active',
-          createdAt: new Date('2024-01-10'),
-          updatedAt: new Date('2024-01-10')
-        },
-        {
-          id: 3,
-          username: 'bob.wilson',
-          email: 'bob.wilson@example.com',
-          role: 'User',
-          status: 'Inactive',
-          createdAt: new Date('2024-01-05'),
-          updatedAt: new Date('2024-01-18')
-        }
-      ];
-      localStorage.setItem('users', JSON.stringify(this.users));
-    }
+   this.users =  this.moduleDataService.getData('users');
   }
 
   createUser() {
@@ -173,7 +131,7 @@ export class UserListComponent implements OnInit {
         const users = JSON.parse(storedUsers);
         const updatedUsers = users.filter((u: User) => u.id !== user.id);
         localStorage.setItem('users', JSON.stringify(updatedUsers));
-        this.loadUsers();
+        this.users =  this.moduleDataService.getData('users');
       }
     }
   }

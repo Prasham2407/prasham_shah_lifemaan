@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccessService } from '../../../core/services/access.service';
+import { ModuleDataService } from '../../../core/services/data/module.data.service';
 
 interface Report {
   id: number;
@@ -87,49 +88,12 @@ export class ReportListComponent implements OnInit {
     create: 'Reports.CreateReports'
   }
   constructor(
-    private router: Router
+    private router: Router,
+    private moduleDataService:ModuleDataService
   ) {}
 
   ngOnInit() {
-    this.loadReports();
-  }
-
-  loadReports() {
-    const storedReports = localStorage.getItem('reports');
-    if (storedReports) {
-      const reports = JSON.parse(storedReports);
-      this.reports = reports.map((report: any) => ({
-        ...report,
-        createdAt: new Date(report.createdAt),
-        updatedAt: new Date(report.updatedAt || report.createdAt)
-      }));
-    } else {
-      // Initialize with mock data
-      this.reports = [
-        {
-          id: 1,
-          title: 'Q1 Financial Report',
-          description: 'Financial analysis and performance metrics for Q1 2024',
-          createdAt: new Date('2024-01-15'),
-          updatedAt: new Date('2024-01-20')
-        },
-        {
-          id: 2,
-          title: 'Annual Performance Review',
-          description: 'Comprehensive review of company performance in 2023',
-          createdAt: new Date('2024-01-10'),
-          updatedAt: new Date('2024-01-10')
-        },
-        {
-          id: 3,
-          title: 'Market Analysis',
-          description: 'Detailed analysis of market trends and opportunities',
-          createdAt: new Date('2024-01-05'),
-          updatedAt: new Date('2024-01-18')
-        }
-      ];
-      localStorage.setItem('reports', JSON.stringify(this.reports));
-    }
+    this.reports = this.moduleDataService.getData('reports');
   }
 
   createReport() {
@@ -151,7 +115,7 @@ export class ReportListComponent implements OnInit {
         const reports = JSON.parse(storedReports);
         const updatedReports = reports.filter((r: Report) => r.id !== report.id);
         localStorage.setItem('reports', JSON.stringify(updatedReports));
-        this.loadReports();
+        this.reports = this.moduleDataService.getData('reports');
       }
     }
   }
