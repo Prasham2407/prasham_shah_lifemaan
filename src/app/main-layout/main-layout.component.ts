@@ -13,7 +13,6 @@ import MainLayoutResolver, { MainLayoutData } from '../core/resolvers/main-layou
           <a mat-list-item *ngFor="let module of modules" 
              [routerLink]="['/', module.toLowerCase()]"
              routerLinkActive="active">
-            <mat-icon matListItemIcon>{{getModuleIcon(module)}}</mat-icon>
             <span matListItemTitle>{{ module }}</span>
           </a>
         </mat-nav-list>

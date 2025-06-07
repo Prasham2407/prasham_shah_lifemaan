@@ -18,7 +18,6 @@ interface Report {
       <div class="header">
         <h1>Reports</h1>
         <button *appGrant="'Reports'; action: grants['create']" mat-raised-button color="primary" (click)="createReport()">
-          <mat-icon>add</mat-icon>
           Create New Report
         </button>
       </div>
